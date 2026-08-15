@@ -195,17 +195,14 @@
     const totalSteps = 4;
 
     function updateStepUI() {
-      // Step visibility
       document.querySelectorAll('.step-page').forEach(el => {
         el.classList.toggle('hidden', parseInt(el.dataset.step) !== currentStep);
       });
 
-      // Progress bar & Badge
       const progressPercent = (currentStep / totalSteps) * 100;
       document.getElementById('progress-bar').style.width = `${progressPercent}%`;
       document.getElementById('step-badge').textContent = `Step ${currentStep} of ${totalSteps}`;
 
-      // Navigation Buttons
       document.getElementById('prev-btn').classList.toggle('hidden', currentStep === 1);
       document.getElementById('next-btn').classList.toggle('hidden', currentStep === totalSteps);
       document.getElementById('submit-btn').classList.toggle('hidden', currentStep !== totalSteps);
@@ -214,7 +211,6 @@
     function navigateStep(direction) {
       const currentStepEl = document.querySelector(`.step-page[data-step="${currentStep}"]`);
       
-      // Client-side field validation before advancing steps
       if (direction === 1) {
         const requiredInputs = currentStepEl.querySelectorAll('[required]');
         let isValid = true;
@@ -235,14 +231,12 @@
     }
 
     function toggleConditionalFields() {
-      // Multi-branch logic
       const multiBranch = document.querySelector('input[name="multi_branch"]:checked')?.value;
       const branchField = document.getElementById('branch-count-field');
       if (branchField) {
         branchField.classList.toggle('hidden', multiBranch !== 'Yes');
       }
 
-      // Barcode pain point logic
       const barcodeUsage = document.querySelector('input[name="barcode_usage"]:checked')?.value;
       const barcodeField = document.getElementById('barcode-pain-field');
       if (barcodeField) {
@@ -250,7 +244,7 @@
       }
     }
 
-    // Submission Handler using Web3Forms
+    // Serverless Submission Handler
     document.getElementById('survey-form').addEventListener('submit', function(e) {
       e.preventDefault();
 
@@ -261,16 +255,12 @@
       const formData = new FormData(this);
       const payload = Object.fromEntries(formData);
       
-      // Aggregate checkboxes into a readable string
+      // Aggregate checkboxes into a single string
       const selectedPainPoints = formData.getAll('pain_points');
       payload.pain_points = selectedPainPoints.length ? selectedPainPoints.join(', ') : 'None selected';
 
-      // Web3Forms Configuration
-      payload.access_key = "YOUR_ACCESS_KEY_HERE"; // Insert key from web3forms.com
-      payload.subject = "New Business Research Survey Response";
-      payload.from_name = "Operations Research App";
-
-      fetch('https://api.web3forms.com/submit', {
+      // Dispatch directly to Vercel API Route
+      fetch('/api/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -279,7 +269,7 @@
         body: JSON.stringify(payload)
       })
       .then(async (response) => {
-        if (response.status === 200) {
+        if (response.ok) {
           document.querySelector('main').innerHTML = `
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center space-y-4">
               <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
@@ -289,7 +279,7 @@
           `;
         } else {
           const resData = await response.json();
-          alert(resData.message || 'Submission failed. Please check your network connection.');
+          alert(resData.message || 'Submission failed. Please check your connection.');
           submitBtn.disabled = false;
           submitBtn.textContent = 'Submit Research';
         }
