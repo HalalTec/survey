@@ -258,103 +258,110 @@
     let currentStep = 1;
     const totalSteps = 5;
 
+    // Replace this string with the Access Key sent to your email from Web3Forms
+    const WEB3FORMS_ACCESS_KEY = "YOUR_ACCESS_KEY_HERE";
+
     function updateStepUI() {
-      document.querySelectorAll('.step-page').forEach(el => {
-        el.classList.toggle('hidden', parseInt(el.dataset.step) !== currentStep);
-      });
+        document.querySelectorAll('.step-page').forEach(el => {
+            el.classList.toggle('hidden', parseInt(el.dataset.step) !== currentStep);
+        });
 
-      const progressPercent = (currentStep / totalSteps) * 100;
-      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
-      document.getElementById('step-badge').textContent = `Step ${currentStep} of ${totalSteps}`;
+        const progressPercent = (currentStep / totalSteps) * 100;
+        document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+        document.getElementById('step-badge').textContent = `Step ${currentStep} of ${totalSteps}`;
 
-      document.getElementById('prev-btn').classList.toggle('hidden', currentStep === 1);
-      document.getElementById('next-btn').classList.toggle('hidden', currentStep === totalSteps);
-      document.getElementById('submit-btn').classList.toggle('hidden', currentStep !== totalSteps);
+        document.getElementById('prev-btn').classList.toggle('hidden', currentStep === 1);
+        document.getElementById('next-btn').classList.toggle('hidden', currentStep === totalSteps);
+        document.getElementById('submit-btn').classList.toggle('hidden', currentStep !== totalSteps);
     }
 
     function navigateStep(direction) {
-      const currentStepEl = document.querySelector(`.step-page[data-step="${currentStep}"]`);
-      
-      if (direction === 1) {
-        const requiredInputs = currentStepEl.querySelectorAll('[required]');
-        let isValid = true;
-        
-        requiredInputs.forEach(input => {
-          if (!input.checkValidity()) {
-            input.reportValidity();
-            isValid = false;
-          }
-        });
+        const currentStepEl = document.querySelector(`.step-page[data-step="${currentStep}"]`);
 
-        if (!isValid) return;
-      }
+        if (direction === 1) {
+            const requiredInputs = currentStepEl.querySelectorAll('[required]');
+            let isValid = true;
 
-      currentStep += direction;
-      currentStep = Math.min(Math.max(currentStep, 1), totalSteps);
-      updateStepUI();
+            requiredInputs.forEach(input => {
+                if (!input.checkValidity()) {
+                    input.reportValidity();
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) return;
+        }
+
+        currentStep += direction;
+        currentStep = Math.min(Math.max(currentStep, 1), totalSteps);
+        updateStepUI();
     }
 
     function toggleConditionalFields() {
-      const multiBranch = document.querySelector('input[name="multi_branch"]:checked')?.value;
-      const branchField = document.getElementById('branch-count-field');
-      if (branchField) {
-        branchField.classList.toggle('hidden', multiBranch !== 'Yes');
-      }
+        const multiBranch = document.querySelector('input[name="multi_branch"]:checked')?.value;
+        const branchField = document.getElementById('branch-count-field');
+        if (branchField) {
+            branchField.classList.toggle('hidden', multiBranch !== 'Yes');
+        }
 
-      const barcodeUsage = document.querySelector('input[name="barcode_usage"]:checked')?.value;
-      const barcodeField = document.getElementById('barcode-pain-field');
-      if (barcodeField) {
-        barcodeField.classList.toggle('hidden', barcodeUsage === 'No' || !barcodeUsage);
-      }
+        const barcodeUsage = document.querySelector('input[name="barcode_usage"]:checked')?.value;
+        const barcodeField = document.getElementById('barcode-pain-field');
+        if (barcodeField) {
+            barcodeField.classList.toggle('hidden', barcodeUsage === 'No' || !barcodeUsage);
+        }
     }
 
-    // Serverless Submission Handler
-    document.getElementById('survey-form').addEventListener('submit', function(e) {
-      e.preventDefault();
+    // Direct Client-Side Submission to Web3Forms
+    document.getElementById('survey-form').addEventListener('submit', function (e) {
+        e.preventDefault();
 
-      const submitBtn = document.getElementById('submit-btn');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Submitting...';
+        const submitBtn = document.getElementById('submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
 
-      const formData = new FormData(this);
-      const payload = Object.fromEntries(formData);
-      
-      // Aggregate checkboxes into a single string
-      const selectedPainPoints = formData.getAll('pain_points');
-      payload.pain_points = selectedPainPoints.length ? selectedPainPoints.join(', ') : 'None selected';
+        const formData = new FormData(this);
+        const payload = Object.fromEntries(formData);
 
-      // Dispatch directly to Vercel API Route
-      fetch('/api/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      })
-      .then(async (response) => {
-        if (response.ok) {
-          document.querySelector('main').innerHTML = `
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center space-y-4">
-              <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
-              <h2 class="text-2xl font-bold text-slate-900">Thank You!</h2>
-              <p class="text-slate-600 text-sm max-w-md mx-auto">Your operational feedback has been recorded. This data directly informs our software research and design.</p>
-            </div>
-          `;
-        } else {
-          const resData = await response.json();
-          alert(resData.message || 'Submission failed. Please check your connection.');
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Submit Research';
-        }
-      })
-      .catch((error) => {
-        console.error('Submission Error:', error);
-        alert('An unexpected error occurred. Please try again.');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Research';
-      });
+        // Process checkboxes into a single clean string
+        const selectedPainPoints = formData.getAll('pain_points');
+        payload.pain_points = selectedPainPoints.length ? selectedPainPoints.join(', ') : 'None selected';
+
+        // Append Web3Forms metadata directly
+        payload.access_key = "b186cdbb-7ee8-45b5-b9a9-02af71d8ce36";
+        payload.subject = "New Business Research Survey Response";
+        payload.from_name = "Operations Research Survey";
+
+        fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(async (response) => {
+                const resData = await response.json();
+                if (response.ok && resData.success) {
+                    document.querySelector('main').innerHTML = `
+          <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center space-y-4">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
+            <h2 class="text-2xl font-bold text-slate-900">Thank You!</h2>
+            <p class="text-slate-600 text-sm max-w-md mx-auto">Your operational feedback has been recorded. This data directly informs our software research and design.</p>
+          </div>
+        `;
+                } else {
+                    alert(resData.message || 'Submission failed. Please check your Access Key.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Research';
+                }
+            })
+            .catch((error) => {
+                console.error('Submission Error:', error);
+                alert('An unexpected network error occurred. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Research';
+            });
     });
-  </script>
+</script>
 </body>
 </html>
