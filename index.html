@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Operations Research Survey</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between font-sans">
+
+  <!-- Header -->
+  <header class="w-full bg-white border-b border-slate-200 py-4 px-6 sticky top-0 z-10">
+    <div class="max-w-2xl mx-auto flex justify-between items-center">
+      <h1 class="font-bold text-slate-900 text-lg tracking-tight">Ops Research 2026</h1>
+      <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full" id="step-badge">Step 1 of 4</span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-2xl w-full mx-auto p-6 my-auto">
+    
+    <!-- Progress Bar -->
+    <div class="w-full bg-slate-200 rounded-full h-2 mb-8 overflow-hidden">
+      <div id="progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300 ease-out" style="width: 25%;"></div>
+    </div>
+
+    <form id="survey-form" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+
+      <!-- STEP 1: Respondent Profile -->
+      <div class="step-page space-y-6" data-step="1">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">About Your Role</h2>
+          <p class="text-sm text-slate-500 mt-1">Help us understand your perspective in the business.</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">What is your primary role?</label>
+          <select name="role" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-slate-800" required>
+            <option value="">Select your role...</option>
+            <option value="Business Owner">Business Owner</option>
+            <option value="General Manager / Store Manager">General Manager / Store Manager</option>
+            <option value="Inventory / Stock Supervisor">Inventory / Stock Supervisor</option>
+            <option value="Floor Staff / Cashier">Floor Staff / Cashier</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">Primary Business Type</label>
+          <select name="business_type" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-slate-800" required>
+            <option value="">Select industry...</option>
+            <option value="Supermarket / Retail Store">Supermarket / Retail Store</option>
+            <option value="Wholesale & Distribution">Wholesale & Distribution</option>
+            <option value="Pharmacy / Healthcare">Pharmacy / Healthcare</option>
+            <option value="Hospitality / Restaurant">Hospitality / Restaurant</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- STEP 2: Operations & Branch Setup -->
+      <div class="step-page space-y-6 hidden" data-step="2">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Workplace Operations</h2>
+          <p class="text-sm text-slate-500 mt-1">Scale and distribution of your operational setup.</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">Does your business operate across multiple locations?</label>
+          <div class="grid grid-cols-2 gap-4">
+            <label class="flex items-center justify-center p-3 border border-slate-300 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
+              <input type="radio" name="multi_branch" value="Yes" class="w-4 h-4 text-indigo-600" onchange="toggleConditionalFields()" required />
+              <span class="ml-2 text-sm font-medium text-slate-700">Yes, multiple</span>
+            </label>
+            <label class="flex items-center justify-center p-3 border border-slate-300 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
+              <input type="radio" name="multi_branch" value="No" class="w-4 h-4 text-indigo-600" onchange="toggleConditionalFields()" />
+              <span class="ml-2 text-sm font-medium text-slate-700">No, single branch</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- CONDITIONAL FIELD: Branch Count -->
+        <div id="branch-count-field" class="hidden space-y-2">
+          <label class="block text-sm font-medium text-slate-700">How many branches/outlets do you manage?</label>
+          <select name="branch_count" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 text-slate-800">
+            <option value="2-3 Branches">2 - 3 Branches</option>
+            <option value="4-10 Branches">4 - 10 Branches</option>
+            <option value="10+ Branches">More than 10 Branches</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">Do you currently use physical barcode scanners?</label>
+          <div class="grid grid-cols-3 gap-3">
+            <label class="flex items-center justify-center p-3 border border-slate-300 rounded-xl cursor-pointer hover:bg-slate-50 text-xs font-medium">
+              <input type="radio" name="barcode_usage" value="Yes, everywhere" onchange="toggleConditionalFields()" required />
+              <span class="ml-1.5">Yes, everywhere</span>
+            </label>
+            <label class="flex items-center justify-center p-3 border border-slate-300 rounded-xl cursor-pointer hover:bg-slate-50 text-xs font-medium">
+              <input type="radio" name="barcode_usage" value="Partial" onchange="toggleConditionalFields()" />
+              <span class="ml-1.5">Some items</span>
+            </label>
+            <label class="flex items-center justify-center p-3 border border-slate-300 rounded-xl cursor-pointer hover:bg-slate-50 text-xs font-medium">
+              <input type="radio" name="barcode_usage" value="No" onchange="toggleConditionalFields()" />
+              <span class="ml-1.5">No, manual</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- CONDITIONAL FIELD: Barcode Pain Points -->
+        <div id="barcode-pain-field" class="hidden space-y-2">
+          <label class="block text-sm font-medium text-slate-700">What is the biggest challenge with your current barcode setup?</label>
+          <input type="text" name="barcode_challenge" placeholder="e.g., Unscannable items, sync lag, missing hardware" class="w-full p-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+      </div>
+
+      <!-- STEP 3: Pain Points & Desired Solutions -->
+      <div class="step-page space-y-6 hidden" data-step="3">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Operations & Challenges</h2>
+          <p class="text-sm text-slate-500 mt-1">Select all areas where your business experiences friction.</p>
+        </div>
+
+        <div class="space-y-3">
+          <label class="block text-sm font-medium text-slate-700">What are your top operational hurdles? (Select all that apply)</label>
+          
+          <label class="flex items-start p-3.5 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors">
+            <input type="checkbox" name="pain_points" value="Stock Discrepancies & Theft" class="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500" />
+            <span class="ml-3 text-sm text-slate-700">Unexplained stock discrepancies or inventory leakage</span>
+          </label>
+
+          <label class="flex items-start p-3.5 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors">
+            <input type="checkbox" name="pain_points" value="Manual Ledger Bookkeeping" class="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500" />
+            <span class="ml-3 text-sm text-slate-700">Heavy reliance on paper records or manual spreadsheets</span>
+          </label>
+
+          <label class="flex items-start p-3.5 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors">
+            <input type="checkbox" name="pain_points" value="Lack of Remote Visibility" class="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500" />
+            <span class="ml-3 text-sm text-slate-700">Inability to view real-time sales/inventory when away from store</span>
+          </label>
+
+          <label class="flex items-start p-3.5 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors">
+            <input type="checkbox" name="pain_points" value="Staff Accountability Issues" class="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500" />
+            <span class="ml-3 text-sm text-slate-700">Tracking employee shifts, cash drawer balances, and override audits</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- STEP 4: Feedback & Anonymity Settings -->
+      <div class="step-page space-y-6 hidden" data-step="4">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Final Thoughts & Contact</h2>
+          <p class="text-sm text-slate-500 mt-1">Your responses remain completely anonymous unless you choose to share contact details below.</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">What single feature would transform your daily operations?</label>
+          <textarea name="ideal_solution" rows="3" class="w-full p-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Describe the ideal tool or software solution..."></textarea>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-slate-900">Would you like early access or follow-up insights?</span>
+            <span class="text-xs text-slate-400">Optional</span>
+          </div>
+
+          <div>
+            <input type="email" name="contact_email" placeholder="Your work email (Optional)" class="w-full p-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Controls -->
+      <div class="flex justify-between items-center pt-6 border-t border-slate-100">
+        <button type="button" id="prev-btn" onclick="navigateStep(-1)" class="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors hidden">
+          ← Back
+        </button>
+        <button type="button" id="next-btn" onclick="navigateStep(1)" class="ml-auto px-6 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors shadow-sm">
+          Continue →
+        </button>
+        <button type="submit" id="submit-btn" class="ml-auto px-6 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-sm hidden">
+          Submit Research
+        </button>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 text-xs text-slate-400">
+    <p>Operational Performance Research &copy; 2026. All data handled securely.</p>
+  </footer>
+
+  <!-- State & Interactivity JavaScript -->
+  <script>
+    let currentStep = 1;
+    const totalSteps = 4;
+
+    function updateStepUI() {
+      // Step visibility
+      document.querySelectorAll('.step-page').forEach(el => {
+        el.classList.toggle('hidden', parseInt(el.dataset.step) !== currentStep);
+      });
+
+      // Progress bar & Badge
+      const progressPercent = (currentStep / totalSteps) * 100;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+      document.getElementById('step-badge').textContent = `Step ${currentStep} of ${totalSteps}`;
+
+      // Navigation Buttons
+      document.getElementById('prev-btn').classList.toggle('hidden', currentStep === 1);
+      document.getElementById('next-btn').classList.toggle('hidden', currentStep === totalSteps);
+      document.getElementById('submit-btn').classList.toggle('hidden', currentStep !== totalSteps);
+    }
+
+    function navigateStep(direction) {
+      const currentStepEl = document.querySelector(`.step-page[data-step="${currentStep}"]`);
+      
+      // Client-side field validation before advancing steps
+      if (direction === 1) {
+        const requiredInputs = currentStepEl.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredInputs.forEach(input => {
+          if (!input.checkValidity()) {
+            input.reportValidity();
+            isValid = false;
+          }
+        });
+
+        if (!isValid) return;
+      }
+
+      currentStep += direction;
+      currentStep = Math.min(Math.max(currentStep, 1), totalSteps);
+      updateStepUI();
+    }
+
+    function toggleConditionalFields() {
+      // Multi-branch logic
+      const multiBranch = document.querySelector('input[name="multi_branch"]:checked')?.value;
+      const branchField = document.getElementById('branch-count-field');
+      if (branchField) {
+        branchField.classList.toggle('hidden', multiBranch !== 'Yes');
+      }
+
+      // Barcode pain point logic
+      const barcodeUsage = document.querySelector('input[name="barcode_usage"]:checked')?.value;
+      const barcodeField = document.getElementById('barcode-pain-field');
+      if (barcodeField) {
+        barcodeField.classList.toggle('hidden', barcodeUsage === 'No' || !barcodeUsage);
+      }
+    }
+
+    // Submission Handler using Web3Forms
+    document.getElementById('survey-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      const formData = new FormData(this);
+      const payload = Object.fromEntries(formData);
+      
+      // Aggregate checkboxes into a readable string
+      const selectedPainPoints = formData.getAll('pain_points');
+      payload.pain_points = selectedPainPoints.length ? selectedPainPoints.join(', ') : 'None selected';
+
+      // Web3Forms Configuration
+      payload.access_key = "YOUR_ACCESS_KEY_HERE"; // Insert key from web3forms.com
+      payload.subject = "New Business Research Survey Response";
+      payload.from_name = "Operations Research App";
+
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(async (response) => {
+        if (response.status === 200) {
+          document.querySelector('main').innerHTML = `
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center space-y-4">
+              <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
+              <h2 class="text-2xl font-bold text-slate-900">Thank You!</h2>
+              <p class="text-slate-600 text-sm max-w-md mx-auto">Your operational feedback has been recorded. This data directly informs our software research and design.</p>
+            </div>
+          `;
+        } else {
+          const resData = await response.json();
+          alert(resData.message || 'Submission failed. Please check your network connection.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Research';
+        }
+      })
+      .catch((error) => {
+        console.error('Submission Error:', error);
+        alert('An unexpected error occurred. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Research';
+      });
+    });
+  </script>
+</body>
+</html>
